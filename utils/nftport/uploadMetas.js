@@ -11,7 +11,7 @@ writer.write("[");
 const readDir = `${basePath}/build/json`;
 let fileCount = fs.readdirSync(readDir).length - 2;
 
-fs.readdirSync(`${basePath}/build/json`).forEach(file => {
+fs.readdirSync(`${basePath}/build/json`).forEach(async (file) => {
     if (file === '_metadata.json' || file === '_ipfsMetas.json')
         return;
 
@@ -28,9 +28,27 @@ fs.readdirSync(`${basePath}/build/json`).forEach(file => {
         body: jsonFile,
     };
 
-    fetch(url, options)
-        .then(res => res.json())
-        .then(json => {
+    // fetch(url, options)
+    //     .then(res => res.json())
+    //     .then(json => {
+    //         writer.write(JSON.stringify(json, null, 2));
+    //         fileCount--;
+    //
+    //         if(fileCount === 0) {
+    //             writer.write("]")
+    //             writer.end()
+    //         } else {
+    //             writer.write(",\n")
+    //         }
+    //
+    //         console.log(`${json.name} metadata uploaded & added to _ipfsMetas.json!`);
+    //
+    //     })
+    //     .catch(err => console.error('error:' + err));
+
+    let response = await fetch(url, options);
+    if (response.ok) {
+        let json = await response.json()
             writer.write(JSON.stringify(json, null, 2));
             fileCount--;
 
@@ -42,7 +60,7 @@ fs.readdirSync(`${basePath}/build/json`).forEach(file => {
             }
 
             console.log(`${json.name} metadata uploaded & added to _ipfsMetas.json!`);
-
-        })
-        .catch(err => console.error('error:' + err));
+    } else {
+        console.log('Response not ok!', response.status)
+    }
 })

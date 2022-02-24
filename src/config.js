@@ -21,7 +21,6 @@ const solanaMetadata = {
   ],
 };
 
-//ec1cbedd-2c44-42ed-93d2-15a225494355
 /*
 {
   "response": "OK",
